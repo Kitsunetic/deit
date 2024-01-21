@@ -52,10 +52,10 @@ class RASampler(torch.utils.data.Sampler):
         assert len(indices) == self.total_size
 
         # subsample
-        indices = indices[self.rank:self.total_size:self.num_replicas]
+        indices = indices[self.rank : self.total_size : self.num_replicas]
         assert len(indices) == self.num_samples
 
-        return iter(indices[:self.num_selected_samples])
+        return iter(indices[: self.num_selected_samples])
 
     def __len__(self):
         return self.num_selected_samples

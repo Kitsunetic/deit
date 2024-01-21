@@ -12,7 +12,7 @@ from timm.models.efficientnet_blocks import SqueezeExcite
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 from timm.models.registry import register_model
 
-__all__ = ['S60', 'S120', 'B60', 'B120', 'L60', 'L120', 'S60_multi']
+__all__ = ["S60", "S120", "B60", "B120", "L60", "L120", "S60_multi"]
 
 
 class Mlp(nn.Module):
@@ -117,14 +117,14 @@ class Learned_Aggregation_Layer_multi(nn.Module):
             .permute(0, 2, 1, 3)
         )
         k = (
-            self.k(x[:, self.num_classes:])
+            self.k(x[:, self.num_classes :])
             .reshape(B, N - self.num_classes, self.num_heads, C // self.num_heads)
             .permute(0, 2, 1, 3)
         )
 
         q = q * self.scale
         v = (
-            self.v(x[:, self.num_classes:])
+            self.v(x[:, self.num_classes :])
             .reshape(B, N - self.num_classes, self.num_heads, C // self.num_heads)
             .permute(0, 2, 1, 3)
         )
@@ -192,7 +192,7 @@ class Conv_blocks_se(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         B, N, C = x.shape
-        H = W = int(N ** 0.5)
+        H = W = int(N**0.5)
         x = x.transpose(-1, -2)
         x = x.reshape(B, C, H, W)
         x = self.qkv_pos(x)
@@ -294,9 +294,7 @@ class PatchConvnet(nn.Module):
         self.num_classes = num_classes
         self.num_features = self.embed_dim = embed_dim  # num_features for consistency with other models
 
-        self.patch_embed = Patch_layer(
-            img_size=img_size, patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim
-        )
+        self.patch_embed = Patch_layer(img_size=img_size, patch_size=patch_size, in_chans=in_chans, embed_dim=embed_dim)
 
         if not self.multiclass:
             self.cls_token = nn.Parameter(torch.zeros(1, 1, int(embed_dim)))
@@ -347,7 +345,7 @@ class PatchConvnet(nn.Module):
 
         self.total_len = depth_token_only + depth
 
-        self.feature_info = [dict(num_chs=int(embed_dim), reduction=0, module='head')]
+        self.feature_info = [dict(num_chs=int(embed_dim), reduction=0, module="head")]
         if not self.multiclass:
             self.head = nn.Linear(int(embed_dim), num_classes) if num_classes > 0 else nn.Identity()
         else:
@@ -369,7 +367,7 @@ class PatchConvnet(nn.Module):
 
     @torch.jit.ignore
     def no_weight_decay(self):
-        return {'cls_token'}
+        return {"cls_token"}
 
     def get_classifier(self):
         return self.head
@@ -377,7 +375,7 @@ class PatchConvnet(nn.Module):
     def get_num_layers(self):
         return len(self.blocks)
 
-    def reset_classifier(self, num_classes: int, global_pool: str = ''):
+    def reset_classifier(self, num_classes: int, global_pool: str = ""):
         self.num_classes = num_classes
         self.head = nn.Linear(self.embed_dim, num_classes) if num_classes > 0 else nn.Identity()
 
